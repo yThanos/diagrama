@@ -10,42 +10,51 @@ export class AppComponent {
   @ViewChild(DxDiagramComponent, { static: false }) diagram!: DxDiagramComponent;
 
   constructor(){
-    setTimeout(() => {
-      console.log(this.diagram.instance.export())
-    }, 10000);
   }
-  array: any = []
+  array: any[] = []
   connectors: Connector[] = []
   shapes: Shape[] = []
   calcula(){
     console.log("\n\n"+this.diagram.instance.export()+"\n\n")
+    console.log(JSON.parse(this.diagram.instance.export()))
     const json = JSON.parse(this.diagram.instance.export());
     this.connectors = json.connectors;
+    //console.log(this.connectors)
     this.shapes = json.shapes;
-    this.primeiro();
-    this.chain(this.array[0])
+    this.chain(this.primeiro(), false)
     console.log(this.array);
   }
 
-  primeiro(){
-    for(let s of this.shapes){
-      if(this.connectors.filter(c => c.endItemKey == s.key).length == 0){
-        console.log("if primeiro");
-        this.array.push({"process":s});
+  chain(shape: Shape, op: boolean){
+    console.log("chains")
+    if(shape.type == "process"){
+      if(!op){
+        this.array.push({"Processo": shape});
       }
-    }
-  }
-  chain(shape: Shape){
-    for(let c of this.connectors){
-      if(shape.type == "process"){
-        this.array.push({"process":shape});
-        this.chain(this.shapes.filter(s => s.key == c.endItemKey)[0]);
-      } else {
-        this.array.push({"decision":shape});
-        for( let con of this.connectors.filter(a => a.beginItemKey == shape.key)){
-          this.chain(this.shapes.filter(s => s.key == con.endItemKey)[0]);
+      if(this.connectors.filter((e)=> e.beginItemKey == shape.key).length != 0){
+        let c = this.connectors.filter((e)=> e.beginItemKey == shape.key)[0]
+        this.chain(this.shapes.filter((e)=> c.endItemKey == e.key)[0], false)
+      }
+      return {"Processo": shape};
+    }else if(shape.type == "decision"){
+      let teste = [];
+      for(let con of this.connectors){
+        if(con.beginItemKey == shape.key){
+          teste.push(this.chain(this.shapes.filter((e)=> e.key === con.endItemKey)[0], true))
         }
       }
+      this.array.push({"Decisao": shape, "ops": teste})
     }
+    return null;
+  }
+
+  primeiro(): Shape{
+    for(let s of this.shapes){
+      if(this.connectors.filter((e)=> e.endItemKey === s.key).length == 0){
+        console.log("Primeiro :"+ JSON.stringify(s))
+        return s;
+      }
+    }
+    return new Shape;
   }
 }
