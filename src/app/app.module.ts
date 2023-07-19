@@ -4,6 +4,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { DxDiagramModule } from 'devextreme-angular';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -12,8 +13,9 @@ import { DxDiagramModule } from 'devextreme-angular';
   imports: [
     BrowserModule,
     HttpClientModule,
-    //BrowserTransferStateModule,
+    BrowserTransferStateModule,
     DxDiagramModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
