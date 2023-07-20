@@ -23,6 +23,7 @@ export class AppComponent {
     this.shapes = json.shapes;
     this.chain(this.primeiro(), false)
     console.log(this.array);
+    this.resolve();
   }
 
   chain(shape: Shape, op: boolean){
@@ -35,7 +36,7 @@ export class AppComponent {
         let c = this.connectors.filter((e)=> e.beginItemKey == shape.key)[0]
         this.chain(this.shapes.filter((e)=> c.endItemKey == e.key)[0], false)
       }
-      return {"Processo": shape};
+      return {"Processo": shape, "if": this.connectors.filter((e)=> e.endItemKey == shape.key)[0]};
     }else if(shape.type == "decision"){
       let teste = [];
       for(let con of this.connectors){
@@ -56,5 +57,30 @@ export class AppComponent {
       }
     }
     return new Shape;
+  }
+  resolve(){
+    for (let i = 0; i < this.array.length; i++) {
+      if(this.array[i].hasOwnProperty("Processo")){
+        console.log("Processo: "+JSON.stringify(this.array[i].Processo))
+      }else if(this.array[i].hasOwnProperty("Decisao")){
+        console.log("Decisao: "+JSON.stringify(this.array[i].Decisao))
+        for(let op in this.array[i].ops){
+          console.log("Op: "+JSON.stringify(this.array[i].ops[op]))
+          console.log("if: "+JSON.stringify(this.array[i].ops[op].if.texts))
+          let chave = this.array[i].ops[op].if.texts.Object.keys(this.array[i].ops[op].if.texts)[0];
+          switch (this.array[i].ops[op].if.texts[chave]) {
+            case "maior":
+              console.log("if X > "+ this.array[i].ops[op].if.texts[1])
+              break;
+            case "menor":
+              console.log("if X < "+ this.array[i].ops[op].if.texts[1])
+              break;
+            case "igual":
+              console.log("if X == "+ this.array[i].ops[op].if.texts[1])
+              break;
+          }
+        }
+      }
+    }
   }
 }
