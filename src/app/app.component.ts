@@ -49,10 +49,13 @@ export class AppComponent {
     return null;
   }
 
+  first: any;
+
   primeiro(): Shape{
     for(let s of this.shapes){
       if(this.connectors.filter((e)=> e.endItemKey === s.key).length == 0){
         console.log("Primeiro :"+ JSON.stringify(s))
+        this.first = s;
         return s;
       }
     }
@@ -67,16 +70,20 @@ export class AppComponent {
         for(let op in this.array[i].ops){
           console.log("Op: "+JSON.stringify(this.array[i].ops[op]))
           console.log("if: "+JSON.stringify(this.array[i].ops[op].if.texts))
-          let chave = this.array[i].ops[op].if.texts.Object.keys(this.array[i].ops[op].if.texts)[0];
+          let chave = Object.keys(this.array[i].ops[op].if.texts)[0];
+          let chave2 = Object.keys(this.array[i].ops[op].if.texts)[1];
           switch (this.array[i].ops[op].if.texts[chave]) {
             case "maior":
-              console.log("if X > "+ this.array[i].ops[op].if.texts[1])
+              console.log("if "+this.first.text+" > "+ this.array[i].ops[op].if.texts[chave2])
+              console.log("do "+ this.array[i].ops[op].Processo.text)
               break;
             case "menor":
-              console.log("if X < "+ this.array[i].ops[op].if.texts[1])
+              console.log("if "+this.first.text+" < "+ this.array[i].ops[op].if.texts[chave2])
+              console.log("do "+ this.array[i].ops[op].Processo.text)
               break;
             case "igual":
-              console.log("if X == "+ this.array[i].ops[op].if.texts[1])
+              console.log("if "+this.first.text+" == "+ this.array[i].ops[op].if.texts[chave2])
+              console.log("do "+ this.array[i].ops[op].Processo.text)
               break;
           }
         }
