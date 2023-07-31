@@ -21,7 +21,6 @@ export class AppComponent {
     console.log(JSON.parse(this.diagram.instance.export()))
     const json = JSON.parse(this.diagram.instance.export());
     this.connectors = json.connectors;
-    //console.log(this.connectors)
     this.shapes = json.shapes;
     this.chain(this.primeiro(), false, 1)
     console.log(this.array);
